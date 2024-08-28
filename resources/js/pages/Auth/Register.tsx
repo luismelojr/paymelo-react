@@ -1,20 +1,25 @@
 import { Link, useForm } from '@inertiajs/react'
 import { GoogleLogo } from '@phosphor-icons/react'
+import InputMask from 'react-input-mask'
 
 import AuthLayout from '@/components/layouts/AuthLayout'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import TextInput from '@/components/ui/text-input'
+import TextMask from '@/components/ui/text-mask'
 
 export default function Login() {
   const form = useForm({
+    name: '',
     email: '',
     password: '',
+    password_confirmation: '',
+    phone: '',
   })
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    form.post(route('login'))
+    form.post(route('register'))
   }
 
   return (
@@ -22,13 +27,30 @@ export default function Login() {
       <div className={'flex flex-col justify-center flex-1'}>
         <div className={'flex flex-col gap-2'}>
           <h1 className={'text-2xl font-semibold tracking-tight'}>
-            Acessar o painel
+            Cadastre-se
           </h1>
           <p className={'text-sm text-muted-foreground'}>
-            Faça login para acessar o painel de controle
+            Crie uma conta para acessar o painel de controle
           </p>
         </div>
         <form className={'space-y-4 mt-10'} onSubmit={handleSubmit}>
+          <TextInput
+            label={'Nome'}
+            error={form.errors.name as string}
+            value={form.data.name as string}
+            onChange={(e) => form.setData('name', e.target.value)}
+            type={'text'}
+            id={'name'}
+          />
+          <TextMask
+            label={'Telefone'}
+            value={form.data.phone as string}
+            onChange={(e) => form.setData('phone', e.target.value)}
+            error={form.errors.phone as string}
+            type={'text'}
+            id={'phone'}
+            mask={'(99) 99999-9999'}
+          />
           <TextInput
             label={'E-mail'}
             error={form.errors.email as string}
@@ -45,16 +67,16 @@ export default function Login() {
             type={'password'}
             id={'password'}
           />
-          <div className={'!mt-2'}>
-            <Link
-              href={route('login')}
-              className={
-                'text-sm text-primary dark:text-foreground transition-all hover:text-indigo-500'
-              }
-            >
-              Esqueci minha senha
-            </Link>
-          </div>
+          <TextInput
+            label={'Confirme a senha'}
+            error={form.errors.password_confirmation as string}
+            value={form.data.password_confirmation as string}
+            onChange={(e) =>
+              form.setData('password_confirmation', e.target.value)
+            }
+            type={'password'}
+            id={'password_confirmation'}
+          />
           <Button
             type={'submit'}
             className={'w-full'}
@@ -64,10 +86,7 @@ export default function Login() {
           </Button>
           <Separator />
           <Button variant={'outline'} className={'w-full'} asChild>
-            <a
-              href={route('oauth.google')}
-              className={'flex gap-1 items-center'}
-            >
+            <a href="#" className={'flex gap-1 items-center'}>
               <GoogleLogo className={'h-5 w-5'} />
               <span className={'ml-2'}>Entrar com Google</span>
             </a>
@@ -79,7 +98,7 @@ export default function Login() {
             asChild
             className={'text-sm text-muted-foreground'}
           >
-            <Link href={route('register')}>Não tem uma conta? Registre-se</Link>
+            <Link href={route('login')}>Já tem uma conta? Acesse o painel</Link>
           </Button>
         </div>
       </div>
