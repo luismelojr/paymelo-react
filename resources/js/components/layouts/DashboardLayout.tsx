@@ -1,10 +1,19 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useEffect } from 'react'
 
 import HeaderNavigation from '@/components/ui/header-navigation'
 import Sidebar from '@/components/ui/sidebar'
 import Toast from '@/components/ui/toast'
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
+  useEffect(() => {
+    const theme = localStorage.getItem('theme') ?? 'dark'
+    if (theme === 'dark') {
+      document.body.classList.add('dark')
+    } else {
+      document.body.classList.remove('dark')
+    }
+  }, [])
+
   return (
     <>
       <div

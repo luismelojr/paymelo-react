@@ -141,7 +141,7 @@ const Item = ({
 }
 
 interface MainMenuProps {
-  initialItems: { route: string; name: string; path: string }[]
+  initialItems?: { route: string; name: string; path: string }[]
   onSelect?: () => void
 }
 
@@ -161,9 +161,7 @@ const itemVariant = {
 }
 
 export function MainMenu({ initialItems, onSelect }: MainMenuProps) {
-  const [items, setItems] = useState(
-    initialItems.length > 0 ? initialItems : defaultItems,
-  )
+  const [items, setItems] = useState(initialItems ?? defaultItems)
   const [isCustomizing, setIsCustomizing] = useState(false)
   const hiddenItems = defaultItems.filter(
     (item) => !items.some((i) => i.path === item.path),
