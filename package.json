@@ -10,6 +10,7 @@
         "@inertiajs/react": "^1.0.0",
         "@rocketseat/eslint-config": "^2.2.2",
         "@tailwindcss/forms": "^0.5.3",
+        "@types/js-cookie": "^3.0.6",
         "@types/node": "^18.13.0",
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.10",
@@ -33,12 +34,17 @@
         "@radix-ui/react-label": "^2.1.0",
         "@radix-ui/react-separator": "^1.1.0",
         "@radix-ui/react-slot": "^1.1.0",
+        "@radix-ui/react-tooltip": "^1.1.2",
+        "@uidotdev/usehooks": "^2.4.1",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
+        "framer-motion": "^11.3.31",
+        "js-cookie": "^3.0.5",
         "lucide-react": "^0.436.0",
         "react-input-mask": "^2.0.4",
         "react-toastify": "^10.0.5",
         "tailwind-merge": "^2.5.2",
-        "tailwindcss-animate": "^1.0.7"
+        "tailwindcss-animate": "^1.0.7",
+        "use-long-press": "^3.2.0"
     }
 }
