@@ -1,10 +1,19 @@
 import { Link } from '@inertiajs/react'
 import { Wallet } from 'lucide-react'
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useEffect } from 'react'
 
 import Toast from '@/components/ui/toast'
 
 export default function AuthLayout({ children }: PropsWithChildren) {
+  useEffect(() => {
+    const theme = localStorage.getItem('theme') ?? 'dark'
+    if (theme === 'dark') {
+      document.body.classList.add('dark')
+    } else {
+      document.body.classList.remove('dark')
+    }
+  }, [])
+
   return (
     <>
       <div className="h-screen grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
