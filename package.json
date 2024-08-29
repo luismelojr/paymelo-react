@@ -37,6 +37,7 @@
         "clsx": "^2.1.1",
         "lucide-react": "^0.436.0",
         "react-input-mask": "^2.0.4",
+        "react-toastify": "^10.0.5",
         "tailwind-merge": "^2.5.2",
         "tailwindcss-animate": "^1.0.7"
     }
