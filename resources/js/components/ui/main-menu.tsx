@@ -3,7 +3,6 @@ import { Gear, Plus, SquaresFour, User, X } from '@phosphor-icons/react'
 import { useClickAway } from '@uidotdev/usehooks'
 import { motion, Reorder, useMotionValue } from 'framer-motion'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
 import { useLongPress } from 'use-long-press'
 
 import { Button } from '@/components/ui/button'
