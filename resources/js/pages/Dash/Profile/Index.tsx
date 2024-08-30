@@ -52,7 +52,7 @@ export default function ProfileIndex({ user }: { user: UserInterface }) {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout title={'Perfil'}>
       <div className={'flex flex-col gap-4'}>
         <Card>
           <CardHeader>

@@ -19,6 +19,16 @@ export interface UserInterface {
   config: ConfigInterface
 }
 
+export interface AccountInterface {
+  id: string
+  type_account: 'current' | 'saving' | 'salary' | 'investment' | 'other'
+  brand: string | null
+  name: string
+  amount_initial: string
+  number_account: string | null
+  number_agency: string | null
+}
+
 export interface Toast {
   duration: number
   text: string

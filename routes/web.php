@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\Dash\AccountController;
 use App\Http\Controllers\Dash\ConfigController;
 use App\Http\Controllers\Dash\NotificationController;
 use App\Http\Controllers\Dash\ProfileController;
@@ -33,6 +34,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile', [ProfileController::class, 'updatePassword'])->name('profile.update.password');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Bank Account
+    Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
 });
 
 require __DIR__.'/auth.php';

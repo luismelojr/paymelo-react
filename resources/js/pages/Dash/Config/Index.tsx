@@ -28,7 +28,7 @@ export default function ConfigIndex({ config }: { config: ConfigInterface }) {
     }
   }
   return (
-    <DashboardLayout>
+    <DashboardLayout title={'Configurações'}>
       <HeaderConfig />
       <div className={'mt-10'}>
         <Card>

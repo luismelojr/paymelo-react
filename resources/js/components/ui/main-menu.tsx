@@ -1,5 +1,13 @@
 import { Link } from '@inertiajs/react'
-import { Gear, Plus, SquaresFour, User, X } from '@phosphor-icons/react'
+import {
+  Bank,
+  CreditCard,
+  Gear,
+  Plus,
+  SquaresFour,
+  User,
+  X,
+} from '@phosphor-icons/react'
 import { useClickAway } from '@uidotdev/usehooks'
 import { motion, Reorder, useMotionValue } from 'framer-motion'
 import { useState } from 'react'
@@ -23,23 +31,30 @@ const defaultItems = [
     routeActive: ['dashboard'],
   },
   {
+    route: 'accounts.index',
+    name: 'Contas e Carteiras',
+    path: '/accounts',
+    routeActive: ['accounts.*'],
+  },
+  {
+    route: 'login',
+    name: 'Cartão de Crédito',
+    path: '/credit-card',
+    routeActive: ['users.*'],
+  },
+  {
     route: 'config.show',
     name: 'Configurações',
     path: '/settings',
     routeActive: ['config.*', 'notification.*'],
-  },
-  {
-    route: 'login',
-    name: 'Usuários',
-    path: '/users',
-    routeActive: ['users.*'],
   },
 ]
 
 const icons: Record<string, any> = {
   '/dashboard': () => <SquaresFour size={22} />,
   '/settings': () => <Gear size={22} />,
-  '/users': () => <User size={22} />,
+  '/credit-card': () => <CreditCard size={22} />,
+  '/accounts': () => <Bank size={22} />,
 }
 
 interface SingleItemProps {

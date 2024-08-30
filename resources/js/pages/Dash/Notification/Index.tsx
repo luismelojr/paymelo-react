@@ -35,7 +35,7 @@ export default function NotificationIndex({
     }
   }
   return (
-    <DashboardLayout>
+    <DashboardLayout title={'Configurações'}>
       <HeaderConfig />
       <div className={'mt-10 space-y-4'}>
         <Card>
