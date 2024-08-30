@@ -14,6 +14,9 @@ class UserService
     {
         $user = $this->user->create($data);
         $user->config()->create();
+        $user->notification()->create([
+            'notify_whatsapp' => (bool)$user->phone,
+        ]);
         return $user;
     }
 

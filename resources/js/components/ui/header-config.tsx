@@ -27,8 +27,8 @@ const menus = [
   },
   {
     name: 'Notificações',
-    href: route('dashboard'),
-    routeActive: ['dashboard'],
+    href: route('notification.show'),
+    routeActive: ['notification.show'],
   },
 ]
 

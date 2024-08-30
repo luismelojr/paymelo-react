@@ -26,7 +26,7 @@ const defaultItems = [
     route: 'config.show',
     name: 'Configurações',
     path: '/settings',
-    routeActive: ['config.*'],
+    routeActive: ['config.*', 'notification.*'],
   },
   {
     route: 'login',

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Dash\ConfigController;
+use App\Http\Controllers\Dash\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,9 +19,13 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-   // Config
+    // Config
     Route::get('/config', [ConfigController::class, 'show'])->name('config.show');
     Route::patch('/config/{config}', [ConfigController::class, 'updateValues'])->name('config.update.values');
+
+    // Notification
+    Route::get('/notification', [NotificationController::class, 'show'])->name('notification.show');
+    Route::patch('/notification/{notification}', [NotificationController::class, 'update'])->name('notification.update.values');
 });
 
 require __DIR__.'/auth.php';

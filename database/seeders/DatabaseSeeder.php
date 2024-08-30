@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user->config()->create();
+        $user->notification()->create();
     }
 }

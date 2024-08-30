@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dash;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Dash\ConfigResource;
 use App\Models\Config;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class ConfigController extends Controller
     {
         $config = auth()->user()->config;
         return inertia('Dash/Config/Index', [
-            'config' => $config
+            'config' => new ConfigResource($config)
         ]);
     }
 

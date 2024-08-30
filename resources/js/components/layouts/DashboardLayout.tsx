@@ -1,10 +1,15 @@
+import { Link } from '@inertiajs/react'
 import { PropsWithChildren, useEffect } from 'react'
 
+import { Alert } from '@/components/ui/alert'
+import AlertNotRegisterPhone from '@/components/ui/alert-not-register-phone'
 import HeaderNavigation from '@/components/ui/header-navigation'
 import Sidebar from '@/components/ui/sidebar'
 import Toast from '@/components/ui/toast'
+import useUser from '@/hooks/useUser'
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
+  const user = useUser()
   useEffect(() => {
     const theme = localStorage.getItem('theme') ?? 'dark'
     if (theme === 'dark') {
@@ -15,12 +20,9 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
   }, [])
 
   return (
-    <>
-      <div
-        className={
-          'min-h-screen min-w-screen grid grid-cols-1 md:grid-cols-[60px_1fr]'
-        }
-      >
+    <div className={'min-h-screen min-w-screen'}>
+      {!user.phone && <AlertNotRegisterPhone />}
+      <div className={'grid grid-cols-1 md:grid-cols-[60px_1fr]'}>
         <div className={'h-full hidden md:block'}>
           <Sidebar />
         </div>
@@ -30,6 +32,6 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
         </div>
       </div>
       <Toast />
-    </>
+    </div>
   )
 }

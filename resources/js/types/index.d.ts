@@ -4,11 +4,18 @@ export interface ConfigInterface {
   visualization: 'list' | 'card'
 }
 
+export interface NotificationInterface {
+  id: string
+  notify_email: boolean
+  notify_whatsapp: boolean
+  notify_payment: boolean
+}
+
 export interface UserInterface {
   id: number
   name: string
   email: string
-  email_verified_at?: string
+  phone: string | null
   config: ConfigInterface
 }
 
