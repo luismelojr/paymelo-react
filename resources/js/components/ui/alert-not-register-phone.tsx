@@ -25,7 +25,7 @@ export default function AlertNotRegisterPhone() {
               WhatsApp.
             </p>
             <Link
-              href="/"
+              href={route('profile.show')}
               className="font-medium text-yellow-700 underline hover:text-yellow-600 "
             >
               Adicionar número de telefone

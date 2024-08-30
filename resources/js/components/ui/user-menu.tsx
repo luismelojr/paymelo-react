@@ -37,7 +37,7 @@ export default function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={'/'}>
+          <Link href={route('profile.show')}>
             <DropdownMenuItem className={'cursor-pointer'}>
               Editar perfil
             </DropdownMenuItem>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Dash\ConfigController;
 use App\Http\Controllers\Dash\NotificationController;
+use App\Http\Controllers\Dash\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,6 +27,12 @@ Route::middleware(['auth'])->group(function () {
     // Notification
     Route::get('/notification', [NotificationController::class, 'show'])->name('notification.show');
     Route::patch('/notification/{notification}', [NotificationController::class, 'update'])->name('notification.update.values');
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile', [ProfileController::class, 'updatePassword'])->name('profile.update.password');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';

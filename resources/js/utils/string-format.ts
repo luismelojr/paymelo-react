@@ -3,8 +3,9 @@ export default function StringFormat() {
   function getInitials(name: string): string {
     const nameSplit = name.split(' ')
     return nameSplit.length > 1
-      ? nameSplit[0].charAt(0) + nameSplit[1].charAt(0)
-      : nameSplit[0].charAt(0)
+      ? nameSplit[0].charAt(0).toUpperCase() +
+          nameSplit[1].charAt(0).toUpperCase()
+      : nameSplit[0].charAt(0).toUpperCase()
   }
 
   return {

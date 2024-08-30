@@ -10,7 +10,7 @@ export default function Sidebar() {
     <aside className={'h-full w-full'}>
       <div className={'flex flex-col pt-4 justify-center items-center'}>
         <div>
-          <Link href={'/'}>
+          <Link href={route('dashboard')}>
             <Wallet size={32} />
           </Link>
         </div>
