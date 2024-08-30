@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\Dash\ConfigController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,5 +16,10 @@ Route::get('/oauth/google/callback', [SocialController::class, 'handleGoogleProv
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::middleware(['auth'])->group(function () {
+   // Config
+    Route::get('/config', [ConfigController::class, 'show'])->name('config.show');
+});
 
 require __DIR__.'/auth.php';

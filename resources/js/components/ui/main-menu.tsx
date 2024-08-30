@@ -20,16 +20,19 @@ const defaultItems = [
     route: 'dashboard',
     name: 'Dashboard',
     path: '/dashboard',
+    routeActive: ['dashboard'],
   },
   {
-    route: 'login',
+    route: 'config.show',
     name: 'Configurações',
     path: '/settings',
+    routeActive: ['config.*'],
   },
   {
     route: 'login',
     name: 'Usuários',
     path: '/users',
+    routeActive: ['users.*'],
   },
 ]
 
@@ -39,8 +42,15 @@ const icons: Record<string, any> = {
   '/users': () => <User size={22} />,
 }
 
+interface SingleItemProps {
+  route: string
+  name: string
+  path: string
+  routeActive: Array<string>
+}
+
 interface ItemProps {
-  item: { route: string; name: string; path: string }
+  item: SingleItemProps
   isActive: boolean
   isCustomizing: boolean
   onRemove: (path: string) => void
@@ -141,7 +151,7 @@ const Item = ({
 }
 
 interface MainMenuProps {
-  initialItems?: { route: string; name: string; path: string }[]
+  initialItems?: SingleItemProps[]
   onSelect?: () => void
 }
 
@@ -173,9 +183,7 @@ export function MainMenu({ initialItems, onSelect }: MainMenuProps) {
     (item) => !items.some((i) => i.path === item.path),
   )
 
-  const onReorder = (
-    items: { route: string; name: string; path: string }[],
-  ) => {
+  const onReorder = (items: SingleItemProps[]) => {
     setItems(items)
   }
 
@@ -188,7 +196,7 @@ export function MainMenu({ initialItems, onSelect }: MainMenuProps) {
     await updateMenu(items.filter((item) => item.path !== path))
   }
 
-  const onAdd = async (item: { route: string; name: string; path: string }) => {
+  const onAdd = async (item: SingleItemProps) => {
     setItems([...items, item])
     await updateMenu([...items, item])
   }
@@ -206,21 +214,29 @@ export function MainMenu({ initialItems, onSelect }: MainMenuProps) {
     setIsCustomizing(false)
   })
 
+  const isActivated = (routeName: Array<string>) => {
+    const value = routeName.map((item) => {
+      return route().current(item)
+    })
+
+    return value.includes(true)
+  }
+
   return (
     <div {...bind()} ref={ref as any}>
       <nav>
         <Reorder.Group
           axis={'y'}
           onReorder={onReorder}
-          values={items}
+          values={items as SingleItemProps[]}
           className={'flex flex-col gap-1.5'}
         >
           {items.map((item) => {
             return (
               <Item
                 key={item.path}
-                item={item}
-                isActive={false}
+                item={item as SingleItemProps}
+                isActive={isActivated(item.routeActive)}
                 isCustomizing={isCustomizing}
                 onRemove={onRemove}
                 disableRemove={items.length === 1}
