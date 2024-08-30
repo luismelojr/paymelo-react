@@ -10,26 +10,17 @@ export default function Dashboard() {
         <div className={'grid grid-cols-1 md:grid-cols-3 gap-4'}>
           <Stats
             title={'Receita'}
-            value={Intl.NumberFormat('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            }).format(1500)}
+            value={100}
             showValue={user.config.hide_values}
           />
           <Stats
             title={'Despesas'}
-            value={Intl.NumberFormat('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            }).format(0)}
+            value={1500}
             showValue={user.config.hide_values}
           />
           <Stats
             title={'Despesas'}
-            value={Intl.NumberFormat('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            }).format(0)}
+            value={500}
             showValue={user.config.hide_values}
           />
         </div>

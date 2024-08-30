@@ -20,6 +20,7 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth'])->group(function () {
    // Config
     Route::get('/config', [ConfigController::class, 'show'])->name('config.show');
+    Route::patch('/config/{config}', [ConfigController::class, 'updateValues'])->name('config.update.values');
 });
 
 require __DIR__.'/auth.php';

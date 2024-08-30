@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface StatsProps {
   title: string
-  value: string
+  value: number
   showValue: boolean
 }
 
@@ -23,7 +23,10 @@ export default function Stats({ title, value, showValue }: StatsProps) {
           onClick={() => setShowValues(!showValues)}
         >
           {showValues ? (
-            `${value}`
+            `${Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            }).format(value)}`
           ) : (
             <div
               className={
