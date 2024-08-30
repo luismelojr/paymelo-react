@@ -161,7 +161,13 @@ const itemVariant = {
 }
 
 export function MainMenu({ initialItems, onSelect }: MainMenuProps) {
-  const [items, setItems] = useState(initialItems ?? defaultItems)
+  const [items, setItems] = useState(
+    initialItems !== undefined
+      ? initialItems.length > 0
+        ? initialItems
+        : defaultItems
+      : defaultItems,
+  )
   const [isCustomizing, setIsCustomizing] = useState(false)
   const hiddenItems = defaultItems.filter(
     (item) => !items.some((i) => i.path === item.path),

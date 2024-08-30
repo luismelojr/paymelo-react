@@ -11,23 +11,27 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import ThemeSelect from '@/components/ui/theme-select'
+import useUser from '@/hooks/useUser'
+import StringFormat from '@/utils/string-format'
 
 export default function UserMenu() {
+  const user = useUser()
+  const { getInitials } = StringFormat()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className={'rounded-full w-8 h-8 cursor-pointer'}>
           <AvatarFallback>
-            <span className="text-xs">LH</span>
+            <span className="text-xs">{getInitials(user.name)}</span>
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[240px]" sideOffset={10} align="end">
         <DropdownMenuLabel>
           <div className={'flex flex-col'}>
-            <span className={'truncate'}>Luis Henrique</span>
+            <span className={'truncate'}>{user.name}</span>
             <span className={'truncate text-xs text-[#606060] font-normal'}>
-              junimhs10@gmail.com
+              {user.email}
             </span>
           </div>
         </DropdownMenuLabel>
