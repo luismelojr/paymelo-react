@@ -21,11 +21,12 @@ interface SelectSearchProps {
   items: {
     value: string
     label: string
-    image?: string | null
+    image: string | null
   }[]
   title: string
   error?: string
   onSubmit: (value: string) => void
+  isButton: boolean
 }
 
 export default function SelectSearch({
@@ -33,12 +34,15 @@ export default function SelectSearch({
   title,
   error,
   onSubmit,
+  isButton = true,
 }: SelectSearchProps) {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
 
   return (
-    <div className={'w-full flex gap-2'}>
+    <div
+      className={cn(`w-full flex gap-2 ${isButton ? 'flex-row' : 'flex-col'}`)}
+    >
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -91,9 +95,11 @@ export default function SelectSearch({
           </Command>
         </PopoverContent>
       </Popover>
-      <Button type={'button'} onClick={() => onSubmit(value)}>
-        Continuar
-      </Button>
+      {isButton && (
+        <Button type={'button'} onClick={() => onSubmit(value)}>
+          Continuar
+        </Button>
+      )}
     </div>
   )
 }

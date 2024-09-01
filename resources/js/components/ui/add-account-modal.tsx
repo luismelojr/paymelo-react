@@ -1,8 +1,7 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Bank, CaretRight, Money, PiggyBank, Plus } from '@phosphor-icons/react'
 import { Wallet } from 'lucide-react'
 import { useState } from 'react'
-import { useForm as useFormReactForm } from 'react-hook-form'
+import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -15,7 +14,6 @@ import {
 } from '@/components/ui/dialog'
 import SelectSearch from '@/components/ui/select-search'
 import ListBankJson from '@/data/list-banks.json'
-import { SelectBankInterface, selectBankSchema } from '@/schemas/schema-account'
 import FormatValuesForSelect from '@/utils/format-values-for-select'
 
 interface ResultProps {
@@ -43,6 +41,8 @@ export default function AddAccountModal() {
     number_account: null,
     number_agency: null,
   })
+  const items = FormatValuesForSelect(ListBankJson.results, true)
+
   function controlOpenModal(status: boolean) {
     if (!status) {
       setSteps(1)
@@ -67,7 +67,6 @@ export default function AddAccountModal() {
   function selectBrandBank(value: string) {
     if (value === 'other') {
       setSteps(3)
-      return
     }
 
     setResult({ ...result, brand: value })
@@ -87,6 +86,7 @@ export default function AddAccountModal() {
               (steps === 3 &&
                 result.type_account !== 'other' &&
                 'Selecione o banco')}
+            {steps === 4 && 'Nova conta'}
           </DialogTitle>
           <DialogDescription>
             {steps === 1 && 'Escolha o tipo de conta que deseja adicionar'}
@@ -94,9 +94,12 @@ export default function AddAccountModal() {
         </DialogHeader>
         {steps === 1 && <Step1 onSelectType={selectTypeAccount} />}
         {steps === 2 && result.type_account !== 'other' && (
-          <Step2 selectBrandBank={selectBrandBank} />
+          <Step2 selectBrandBank={selectBrandBank} items={items} />
         )}
-        {steps === 3 && <Step3 />}
+        {steps === 3 && (
+          <Step3 selectBrandBank={selectBrandBank} items={items} />
+        )}
+        {steps === 4 && <Step4 items={items} />}
       </DialogContent>
     </Dialog>
   )
@@ -180,41 +183,42 @@ const Step1 = ({ onSelectType }: Step1Props) => {
 
 interface Step2Props {
   selectBrandBank: (value: string) => void
+  items: { value: string; label: string; image: string | null }[]
 }
 
-const Step2 = ({ selectBrandBank }: Step2Props) => {
+const Step2 = ({ selectBrandBank, items }: Step2Props) => {
+  console.log(items)
+  // Pegar os bancos mais utilizados
+  const selectedItems = items.filter((item) => {
+    const banks = [
+      'Bradesco',
+      'Banco do Brasil',
+      'Santander',
+      'Caixa Econômica Federal',
+      'Itaú Unibanco',
+      'C6 Bank',
+      'Nubank',
+    ]
+
+    return banks.includes(item.label)
+  })
+
   return (
-    <div className={'grid grid-cols-2 md:grid-cols-4 gap-2'}>
-      <button
-        onClick={() => selectBrandBank('bradesco')}
-        className={
-          'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
-        }
-      >
-        <img
-          src={
-            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/bradesco.png'
+    <div className={'grid grid-cols-2 md:grid-cols-4 gap-2 items-start'}>
+      {selectedItems.map((item) => (
+        <button
+          key={item.value}
+          onClick={() => selectBrandBank(item.value)}
+          className={
+            'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
           }
-          className={'w-12 h-12'}
-          alt={'Bradesco'}
-        />
-        <span>Bradesco</span>
-      </button>
-      <button
-        onClick={() => selectBrandBank('nubank')}
-        className={
-          'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
-        }
-      >
-        <img
-          src={
-            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/nubank.png'
-          }
-          className={'w-12 h-12'}
-          alt={'Bradesco'}
-        />
-        <span>Nubank</span>
-      </button>
+        >
+          {item.image && (
+            <img src={item.image} className={'w-12 h-12'} alt={item.label} />
+          )}
+          <span className={'text-xs text-muted-foreground'}>{item.label}</span>
+        </button>
+      ))}
       <button
         onClick={() => selectBrandBank('other')}
         className={
@@ -228,29 +232,55 @@ const Step2 = ({ selectBrandBank }: Step2Props) => {
         >
           <Plus />
         </div>
-        <span>Outros</span>
+        <span className={'text-xs text-muted-foreground'}>Outros</span>
       </button>
     </div>
   )
 }
 
-const Step3 = () => {
-  const items = FormatValuesForSelect(ListBankJson.results, true)
+interface Step3Props {
+  selectBrandBank: (value: string) => void
+  items: { value: string; label: string; image: string | null }[]
+}
+
+const Step3 = ({ selectBrandBank, items }: Step3Props) => {
   const [error, setError] = useState('')
 
   function onSubmit(value: string) {
     if (value === '') {
       setError('Selecione um banco')
+      return
     }
+
+    selectBrandBank(value)
   }
 
   return (
-    <div className={'w-full flex gap-2'}>
+    <div className={'w-full flex flex-col gap-2'}>
       <SelectSearch
         items={items}
         title={'Selecione o banco'}
         error={error}
         onSubmit={onSubmit}
+        isButton={true}
+      />
+      {error && <p className={'text-xs text-red-500'}>{error}</p>}
+    </div>
+  )
+}
+
+interface Step4Props {
+  items: { value: string; label: string; image: string | null }[]
+}
+
+const Step4 = ({ items }: Step4Props) => {
+  return (
+    <div className={'w-full flex flex-col gap-2'}>
+      <SelectSearch
+        items={items}
+        title={'Selecione o banco'}
+        onSubmit={() => {}}
+        isButton={false}
       />
     </div>
   )
