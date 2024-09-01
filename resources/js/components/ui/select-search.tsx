@@ -58,7 +58,9 @@ export default function SelectSearch({
             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className={'w-[360px] p-0'}>
+        <PopoverContent
+          className={cn(`p-0 ${isButton ? 'w-[360px]' : 'w-[460px]'}`)}
+        >
           <Command>
             <CommandInput placeholder={'Pesquisar...'} className={'h-9'} />
             <CommandList>

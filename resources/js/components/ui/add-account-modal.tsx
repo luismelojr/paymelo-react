@@ -67,6 +67,7 @@ export default function AddAccountModal() {
   function selectBrandBank(value: string) {
     if (value === 'other') {
       setSteps(3)
+      return
     }
 
     setResult({ ...result, brand: value })
