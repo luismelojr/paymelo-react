@@ -1,7 +1,8 @@
-import { Link } from '@inertiajs/react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Bank, CaretRight, Money, PiggyBank, Plus } from '@phosphor-icons/react'
 import { Wallet } from 'lucide-react'
 import { useState } from 'react'
+import { useForm as useFormReactForm } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,6 +13,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import SelectSearch from '@/components/ui/select-search'
+import ListBankJson from '@/data/list-banks.json'
+import { SelectBankInterface, selectBankSchema } from '@/schemas/schema-account'
+import FormatValuesForSelect from '@/utils/format-values-for-select'
 
 interface ResultProps {
   type_account: 'current' | 'saving' | 'salary' | 'investment' | 'other' | null
@@ -23,6 +28,12 @@ interface ResultProps {
 }
 
 export default function AddAccountModal() {
+  /*
+   * Setp 1: Selecionar o tipo de conta
+   * Step 2: Selecionar o banco
+   * Step 3: Tela de selecao de outros bancos
+   * Step 4: Tela de cadastro de conta
+   * */
   const [steps, setSteps] = useState(1)
   const [result, setResult] = useState<ResultProps>({
     type_account: null,
@@ -32,7 +43,6 @@ export default function AddAccountModal() {
     number_account: null,
     number_agency: null,
   })
-
   function controlOpenModal(status: boolean) {
     if (!status) {
       setSteps(1)
@@ -54,6 +64,16 @@ export default function AddAccountModal() {
     setSteps(2)
   }
 
+  function selectBrandBank(value: string) {
+    if (value === 'other') {
+      setSteps(3)
+      return
+    }
+
+    setResult({ ...result, brand: value })
+    setSteps(4)
+  }
+
   return (
     <Dialog onOpenChange={controlOpenModal}>
       <DialogTrigger asChild>
@@ -63,16 +83,20 @@ export default function AddAccountModal() {
         <DialogHeader>
           <DialogTitle>
             {steps === 1 && 'Tipo de conta'}{' '}
-            {steps === 2 &&
-              result.type_account !== 'other' &&
-              'Selecione o banco'}
+            {steps === 2 ||
+              (steps === 3 &&
+                result.type_account !== 'other' &&
+                'Selecione o banco')}
           </DialogTitle>
           <DialogDescription>
             {steps === 1 && 'Escolha o tipo de conta que deseja adicionar'}
           </DialogDescription>
         </DialogHeader>
         {steps === 1 && <Step1 onSelectType={selectTypeAccount} />}
-        {steps === 2 && result.type_account !== 'other' && <Step2 />}
+        {steps === 2 && result.type_account !== 'other' && (
+          <Step2 selectBrandBank={selectBrandBank} />
+        )}
+        {steps === 3 && <Step3 />}
       </DialogContent>
     </Dialog>
   )
@@ -154,10 +178,15 @@ const Step1 = ({ onSelectType }: Step1Props) => {
   )
 }
 
-const Step2 = () => {
+interface Step2Props {
+  selectBrandBank: (value: string) => void
+}
+
+const Step2 = ({ selectBrandBank }: Step2Props) => {
   return (
     <div className={'grid grid-cols-2 md:grid-cols-4 gap-2'}>
       <button
+        onClick={() => selectBrandBank('bradesco')}
         className={
           'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
         }
@@ -172,90 +201,22 @@ const Step2 = () => {
         <span>Bradesco</span>
       </button>
       <button
+        onClick={() => selectBrandBank('nubank')}
         className={
           'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
         }
       >
         <img
           src={
-            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/bradesco.png'
+            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/nubank.png'
           }
           className={'w-12 h-12'}
           alt={'Bradesco'}
         />
-        <span>Bradesco</span>
+        <span>Nubank</span>
       </button>
       <button
-        className={
-          'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
-        }
-      >
-        <img
-          src={
-            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/bradesco.png'
-          }
-          className={'w-12 h-12'}
-          alt={'Bradesco'}
-        />
-        <span>Bradesco</span>
-      </button>
-      <button
-        className={
-          'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
-        }
-      >
-        <img
-          src={
-            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/bradesco.png'
-          }
-          className={'w-12 h-12'}
-          alt={'Bradesco'}
-        />
-        <span>Bradesco</span>
-      </button>
-      <button
-        className={
-          'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
-        }
-      >
-        <img
-          src={
-            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/bradesco.png'
-          }
-          className={'w-12 h-12'}
-          alt={'Bradesco'}
-        />
-        <span>Bradesco</span>
-      </button>
-      <button
-        className={
-          'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
-        }
-      >
-        <img
-          src={
-            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/bradesco.png'
-          }
-          className={'w-12 h-12'}
-          alt={'Bradesco'}
-        />
-        <span>Bradesco</span>
-      </button>
-      <button
-        className={
-          'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
-        }
-      >
-        <img
-          src={
-            'https://storage.googleapis.com/controlle_dev_prod/institutions_financials/bradesco.png'
-          }
-          className={'w-12 h-12'}
-          alt={'Bradesco'}
-        />
-        <span>Bradesco</span>
-      </button>
-      <button
+        onClick={() => selectBrandBank('other')}
         className={
           'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:text-foreground text-muted-foreground hover:bg-zinc-100 transition-all'
         }
@@ -269,6 +230,28 @@ const Step2 = () => {
         </div>
         <span>Outros</span>
       </button>
+    </div>
+  )
+}
+
+const Step3 = () => {
+  const items = FormatValuesForSelect(ListBankJson.results, true)
+  const [error, setError] = useState('')
+
+  function onSubmit(value: string) {
+    if (value === '') {
+      setError('Selecione um banco')
+    }
+  }
+
+  return (
+    <div className={'w-full flex gap-2'}>
+      <SelectSearch
+        items={items}
+        title={'Selecione o banco'}
+        error={error}
+        onSubmit={onSubmit}
+      />
     </div>
   )
 }
