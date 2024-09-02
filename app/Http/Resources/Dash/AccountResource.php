@@ -22,6 +22,7 @@ class AccountResource extends JsonResource
             'amount_initial' => $this->amount_initial,
             'number_account' => $this->number_account,
             'number_agency' => $this->number_agency,
+            'balances' => $this->balances,
         ];
     }
 }

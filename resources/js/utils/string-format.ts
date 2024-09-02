@@ -8,7 +8,23 @@ export default function StringFormat() {
       : nameSplit[0].charAt(0).toUpperCase()
   }
 
+  function formatTextTypeAccount(type: string | null) {
+    switch (type) {
+      case 'current':
+        return 'Conta corrente'
+      case 'saving':
+        return 'Conta poupança'
+      case 'investment':
+        return 'Conta investimento'
+      case 'other':
+        return 'Outros'
+      default:
+        return ''
+    }
+  }
+
   return {
     getInitials,
+    formatTextTypeAccount,
   }
 }

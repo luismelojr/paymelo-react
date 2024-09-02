@@ -27,6 +27,11 @@ export interface AccountInterface {
   amount_initial: string
   number_account: string | null
   number_agency: string | null
+  balances: {
+    month: string
+    income: number
+    expense: number
+  }[]
 }
 
 export interface Toast {

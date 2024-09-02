@@ -37,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Bank Account
     Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
+    Route::post('/accounts', [AccountController::class, 'store'])->name('accounts.store');
+    Route::delete('/accounts/{account}', [AccountController::class, 'destroy'])->name('accounts.destroy');
 });
 
 require __DIR__.'/auth.php';

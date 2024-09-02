@@ -1,7 +1,9 @@
+import { useForm } from '@inertiajs/react'
 import { Bank, CaretRight, Money, PiggyBank, Plus } from '@phosphor-icons/react'
 import { Wallet } from 'lucide-react'
 import { useState } from 'react'
 import * as React from 'react'
+import { CurrencyInput } from 'react-currency-mask'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,17 +14,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
 import SelectSearch from '@/components/ui/select-search'
+import TextInput from '@/components/ui/text-input'
 import ListBankJson from '@/data/list-banks.json'
 import FormatValuesForSelect from '@/utils/format-values-for-select'
+import StringFormat from '@/utils/string-format'
 
+export interface BrandProps {
+  value: string
+  label: string
+  image: string | null
+}
 interface ResultProps {
   type_account: 'current' | 'saving' | 'salary' | 'investment' | 'other' | null
-  brand: string | null
+  brand: BrandProps
   name: string | null
-  amount_initial: string | null
-  number_account: string | null
-  number_agency: string | null
+  amount_initial: string
+  number_account: string
+  number_agency: string
 }
 
 export default function AddAccountModal() {
@@ -35,24 +45,27 @@ export default function AddAccountModal() {
   const [steps, setSteps] = useState(1)
   const [result, setResult] = useState<ResultProps>({
     type_account: null,
-    brand: null,
+    brand: { value: '', label: '', image: '' },
     name: null,
-    amount_initial: null,
-    number_account: null,
-    number_agency: null,
+    amount_initial: '',
+    number_account: '',
+    number_agency: '',
   })
   const items = FormatValuesForSelect(ListBankJson.results, true)
+  const [open, setOpen] = useState(false)
+  const { formatTextTypeAccount } = StringFormat()
 
   function controlOpenModal(status: boolean) {
+    setOpen(status)
     if (!status) {
       setSteps(1)
       setResult({
         type_account: null,
-        brand: null,
+        brand: { value: '', label: '', image: '' },
         name: null,
-        amount_initial: null,
-        number_account: null,
-        number_agency: null,
+        amount_initial: '',
+        number_account: '',
+        number_agency: '',
       })
     }
   }
@@ -64,8 +77,8 @@ export default function AddAccountModal() {
     setSteps(2)
   }
 
-  function selectBrandBank(value: string) {
-    if (value === 'other') {
+  function selectBrandBank(value: BrandProps) {
+    if (value.label === 'other') {
       setSteps(3)
       return
     }
@@ -75,7 +88,7 @@ export default function AddAccountModal() {
   }
 
   return (
-    <Dialog onOpenChange={controlOpenModal}>
+    <Dialog onOpenChange={controlOpenModal} open={open}>
       <DialogTrigger asChild>
         <Button>Adicionar Conta</Button>
       </DialogTrigger>
@@ -83,24 +96,24 @@ export default function AddAccountModal() {
         <DialogHeader>
           <DialogTitle>
             {steps === 1 && 'Tipo de conta'}{' '}
-            {steps === 2 ||
-              (steps === 3 &&
-                result.type_account !== 'other' &&
-                'Selecione o banco')}
-            {steps === 4 && 'Nova conta'}
+            {steps === 2 || (steps === 3 && 'Selecione o banco')}
+            {steps === 4 &&
+              `Nova conta - ${formatTextTypeAccount(result.type_account)}`}
           </DialogTitle>
           <DialogDescription>
             {steps === 1 && 'Escolha o tipo de conta que deseja adicionar'}
           </DialogDescription>
         </DialogHeader>
         {steps === 1 && <Step1 onSelectType={selectTypeAccount} />}
-        {steps === 2 && result.type_account !== 'other' && (
+        {steps === 2 && (
           <Step2 selectBrandBank={selectBrandBank} items={items} />
         )}
         {steps === 3 && (
           <Step3 selectBrandBank={selectBrandBank} items={items} />
         )}
-        {steps === 4 && <Step4 items={items} />}
+        {steps === 4 && (
+          <Step4 items={items} result={result} close={() => setOpen(false)} />
+        )}
       </DialogContent>
     </Dialog>
   )
@@ -183,12 +196,11 @@ const Step1 = ({ onSelectType }: Step1Props) => {
 }
 
 interface Step2Props {
-  selectBrandBank: (value: string) => void
+  selectBrandBank: (value: BrandProps) => void
   items: { value: string; label: string; image: string | null }[]
 }
 
 const Step2 = ({ selectBrandBank, items }: Step2Props) => {
-  console.log(items)
   // Pegar os bancos mais utilizados
   const selectedItems = items.filter((item) => {
     const banks = [
@@ -209,7 +221,7 @@ const Step2 = ({ selectBrandBank, items }: Step2Props) => {
       {selectedItems.map((item) => (
         <button
           key={item.value}
-          onClick={() => selectBrandBank(item.value)}
+          onClick={() => selectBrandBank(item)}
           className={
             'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:bg-zinc-100 transition-all'
           }
@@ -221,7 +233,9 @@ const Step2 = ({ selectBrandBank, items }: Step2Props) => {
         </button>
       ))}
       <button
-        onClick={() => selectBrandBank('other')}
+        onClick={() =>
+          selectBrandBank({ value: 'other', label: 'other', image: null })
+        }
         className={
           'flex flex-col text-center gap-4 justify-center items-center py-4 rounded-md hover:dark:bg-[#1c1c23] hover:text-foreground text-muted-foreground hover:bg-zinc-100 transition-all'
         }
@@ -240,15 +254,15 @@ const Step2 = ({ selectBrandBank, items }: Step2Props) => {
 }
 
 interface Step3Props {
-  selectBrandBank: (value: string) => void
+  selectBrandBank: (value: BrandProps) => void
   items: { value: string; label: string; image: string | null }[]
 }
 
 const Step3 = ({ selectBrandBank, items }: Step3Props) => {
   const [error, setError] = useState('')
 
-  function onSubmit(value: string) {
-    if (value === '') {
+  function onSubmit(value: BrandProps | null) {
+    if (value === null) {
       setError('Selecione um banco')
       return
     }
@@ -272,17 +286,85 @@ const Step3 = ({ selectBrandBank, items }: Step3Props) => {
 
 interface Step4Props {
   items: { value: string; label: string; image: string | null }[]
+  result: ResultProps
+  close: () => void
 }
 
-const Step4 = ({ items }: Step4Props) => {
+const Step4 = ({ items, result, close }: Step4Props) => {
+  const form = useForm({
+    type_account: result?.type_account || null,
+    brand: result.brand,
+    name: result.brand.label,
+    amount_initial: '',
+    number_account: '',
+    number_agency: '',
+  })
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    form.post(route('accounts.store'), {
+      onSuccess: () => {
+        close()
+      },
+    })
+  }
+
   return (
-    <div className={'w-full flex flex-col gap-2'}>
-      <SelectSearch
-        items={items}
-        title={'Selecione o banco'}
-        onSubmit={() => {}}
-        isButton={false}
+    <form className={'w-full space-y-4'} onSubmit={handleSubmit}>
+      <TextInput
+        label={'Nome do banco'}
+        error={form.errors.name as string}
+        type={'text'}
+        id={'name'}
+        value={form.data.name as string}
+        onChange={(e) => form.setData('name', e.target.value)}
       />
-    </div>
+
+      <div className={'space-y-2'}>
+        <Label htmlFor={'brand-bank'}>Selecionar banco</Label>
+        <SelectSearch
+          items={items}
+          title={'Selecione o banco'}
+          onSubmit={(value) => form.setData('brand', value as BrandProps)}
+          isValue={form.data.brand}
+          isButton={false}
+          error={form.errors.brand as string}
+        />
+      </div>
+      <CurrencyInput
+        value={form.data?.amount_initial as string}
+        onChangeValue={(_, value) =>
+          form.setData('amount_initial', value as string)
+        }
+        InputElement={
+          <TextInput
+            label="Valor Mínimo"
+            name="minimum_value"
+            id="minimum_value"
+            error={form.errors.amount_initial as string}
+            type={'text'}
+          />
+        }
+      />
+      <TextInput
+        label={'Agência do banco (opcional)'}
+        error={form.errors.number_agency as string}
+        type={'text'}
+        id={'name'}
+        value={form.data.number_agency as string}
+        onChange={(e) => form.setData('number_agency', e.target.value)}
+      />
+      <TextInput
+        label={'Numero da conta (opcional)'}
+        error={form.errors.number_account as string}
+        type={'text'}
+        id={'name'}
+        value={form.data.number_account as string}
+        onChange={(e) => form.setData('number_account', e.target.value)}
+      />
+      <Button className={'w-full'} type={'submit'} loading={form.processing}>
+        Cadastrar conta
+      </Button>
+    </form>
   )
 }

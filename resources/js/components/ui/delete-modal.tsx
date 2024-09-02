@@ -16,19 +16,23 @@ interface DeleteModalProps {
   loading: boolean
   title: string
   message: string
+  component?: React.ReactNode
 }
 export default function DeleteModal({
   loading,
   title,
   message,
   onDelete,
+  component,
 }: DeleteModalProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant={'destructive'} loading={loading}>
-          Deletar
-        </Button>
+        {component || (
+          <Button variant={'destructive'} loading={loading}>
+            Deletar
+          </Button>
+        )}
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

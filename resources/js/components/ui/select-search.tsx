@@ -1,6 +1,7 @@
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
 import { useState } from 'react'
 
+import { BrandProps } from '@/components/ui/add-account-modal'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -25,8 +26,9 @@ interface SelectSearchProps {
   }[]
   title: string
   error?: string
-  onSubmit: (value: string) => void
+  onSubmit: (value: BrandProps | null) => void
   isButton: boolean
+  isValue?: BrandProps | null
 }
 
 export default function SelectSearch({
@@ -34,10 +36,11 @@ export default function SelectSearch({
   title,
   error,
   onSubmit,
+  isValue,
   isButton = true,
 }: SelectSearchProps) {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState<BrandProps | null>(isValue || null)
 
   return (
     <div
@@ -54,7 +57,9 @@ export default function SelectSearch({
               error && 'border-destructive',
             )}
           >
-            {value ? items.find((item) => item.value === value)?.label : title}
+            {value
+              ? items.find((item) => item.value === value.value)?.label
+              : title}
             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -71,8 +76,14 @@ export default function SelectSearch({
                     key={item.value}
                     value={item.value}
                     onSelect={(currentValue: string) => {
-                      setValue(currentValue === value ? '' : currentValue)
-                      setOpen(false)
+                      if (isButton) {
+                        setValue(currentValue === value?.value ? null : item)
+                        setOpen(false)
+                      } else {
+                        setValue(currentValue === value?.value ? null : item)
+                        onSubmit(currentValue === value?.value ? null : item)
+                        setOpen(false)
+                      }
                     }}
                     className={'flex items-center gap-2'}
                   >
@@ -87,7 +98,9 @@ export default function SelectSearch({
                     <CheckIcon
                       className={cn(
                         'ml-auto h-4 w-4',
-                        value === item.value ? 'opacity-100' : 'opacity-0',
+                        value?.value === item.value
+                          ? 'opacity-100'
+                          : 'opacity-0',
                       )}
                     />
                   </CommandItem>
